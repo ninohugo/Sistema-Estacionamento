@@ -1,18 +1,40 @@
-## Getting Started
+Sistema de Estacionamento 🚗🅿️
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+Sistema desenvolvido em Java para controle de entrada e saída de veículos em um estacionamento, utilizando Programação Orientada a Objetos (POO), JDBC e MySQL.
 
-## Folder Structure
+📌 Funcionalidades
 
-The workspace contains two folders by default, where:
+✅ Cadastro de veículos
+✅ Controle de vagas
+✅ Registro de entrada
+✅ Registro de saída
+✅ Cálculo automático de cobrança
+✅ Histórico de movimentações
+✅ Integração com banco MySQL
+✅ Controle de vagas ocupadas/livres
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+🛠 Tecnologias Utilizadas
+Java 17+
+IntelliJ IDEA
+MySQL
+JDBC
+Programação Orientada a Objetos (POO)
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+💰 Regras de Cobrança
+Tempo	Valor
+Até 1 hora	R$ 5,00
+Hora adicional	R$ 3,00
+Tipos de veículos
+Tipo	Regra
+Moto	50% do valor
+Caminhonete	150% do valor
+Carro	Valor normal
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
 
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+▶ Como Executar
+Clonar o projeto
+Abrir no IntelliJ
+Configurar o MySQL
+Adicionar o Connector/J
+Executar:
+Main.java
