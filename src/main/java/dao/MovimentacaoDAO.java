@@ -9,13 +9,13 @@ public class MovimentacaoDAO {
 
     // REGISTRAR ENTRADA
     public void registrarEntrada(
-            String placa,
-            String vaga
+            int veiculoId,
+            String vaga_id
     ) {
 
         String sql =
                 "INSERT INTO movimentacoes " +
-                        "(placa_veiculo, vaga, data_entrada) " +
+                        "(veiculo_id, vaga_id, data_entrada) " +
                         "VALUES (?, ?, NOW())";
 
         try {
@@ -26,8 +26,8 @@ public class MovimentacaoDAO {
             PreparedStatement stmt =
                     conn.prepareStatement(sql);
 
-            stmt.setString(1, placa);
-            stmt.setString(2, vaga);
+            stmt.setInt(1, veiculoId);
+            stmt.setString(2, vaga_id);
 
             stmt.executeUpdate();
 
@@ -37,7 +37,7 @@ public class MovimentacaoDAO {
 
         } catch (Exception e) {
 
-            System.out.println(
+            throw new RuntimeException(
                     "Erro entrada: "
                             + e.getMessage()
             );
@@ -46,7 +46,7 @@ public class MovimentacaoDAO {
 
     // REGISTRAR SAÍDA
     public void registrarSaida(
-            String placa,
+            int veiculoId,
             double valorPago
     ) {
 
@@ -54,7 +54,7 @@ public class MovimentacaoDAO {
                 "UPDATE movimentacoes " +
                         "SET data_saida = NOW(), " +
                         "valor_pago = ? " +
-                        "WHERE placa_veiculo = ? " +
+                        "WHERE veiculo_id = ? " +
                         "AND data_saida IS NULL";
 
         try {
@@ -66,7 +66,7 @@ public class MovimentacaoDAO {
                     conn.prepareStatement(sql);
 
             stmt.setDouble(1, valorPago);
-            stmt.setString(2, placa);
+            stmt.setInt(2, veiculoId);
 
             stmt.executeUpdate();
 
@@ -76,7 +76,7 @@ public class MovimentacaoDAO {
 
         } catch (Exception e) {
 
-            System.out.println(
+            throw new RuntimeException(
                     "Erro saída: "
                             + e.getMessage()
             );

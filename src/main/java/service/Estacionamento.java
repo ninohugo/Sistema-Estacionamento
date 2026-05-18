@@ -28,18 +28,6 @@ public class Estacionamento {
     // CADASTRAR VEÍCULO
     public void cadastrarVeiculo(Veiculo v) {
 
-        boolean existe = veiculos.stream()
-                .anyMatch(x ->
-                        x.getPlaca()
-                                .equalsIgnoreCase(v.getPlaca()));
-
-        if (existe) {
-
-            throw new RuntimeException(
-                    "Placa já cadastrada!"
-            );
-        }
-
         veiculos.add(v);
 
         veiculoDAO.salvar(v);
@@ -50,54 +38,116 @@ public class Estacionamento {
     }
 
     // REGISTRAR ENTRADA
-    public void registrarEntrada(String placa, String numeroVaga) {
+    public void registrarEntrada(
+            String placa,
+            String numeroVaga
+    ) {
 
-        if (estaEstacionado(placa)) {
-            throw new RuntimeException("Veículo já estacionado!");
+        Veiculo veiculo = null;
+
+        for (Veiculo v : veiculos) {
+
+            if (v.getPlaca().equalsIgnoreCase(placa)) {
+
+                veiculo = v;
+                break;
+            }
         }
 
-        Veiculo veiculo = buscarVeiculo(placa);
+        if (veiculo == null) {
 
-        Vaga vaga = buscarVaga(numeroVaga);
-
-        if (vaga.isOcupada()) {
-            throw new RuntimeException("Vaga já está ocupada!");
+            throw new RuntimeException(
+                    "Veículo não encontrado!"
+            );
         }
 
-        vaga.ocupar();
+        Vaga vagaEscolhida = null;
+
+        for (Vaga vaga : vagas) {
+
+            if (
+                    vaga.getNumero()
+                            .equalsIgnoreCase(numeroVaga)
+                            && !vaga.isOcupada()
+            ) {
+
+                vagaEscolhida = vaga;
+                break;
+            }
+        }
+
+        if (vagaEscolhida == null) {
+
+            throw new RuntimeException(
+                    "Vaga indisponível!"
+            );
+        }
+
+        vagaEscolhida.ocupar();
 
         Movimentacao mov =
                 new Movimentacao(
                         veiculo,
-                        vaga
+                        vagaEscolhida
                 );
 
         movimentacoes.add(mov);
 
+        int veiculoId =
+                veiculoDAO.buscarIdPorPlaca(
+                        placa
+                );
+
         movimentacaoDAO.registrarEntrada(
-                placa,
-                vaga.getNumero()
+                veiculoId,
+                vagaEscolhida.getNumero()
         );
 
-        System.out.println("Entrada registrada com sucesso!");
+        System.out.println(
+                "Entrada registrada!"
+        );
     }
 
     // REGISTRAR SAÍDA
     public void registrarSaida(String placa) {
 
-        Movimentacao mov = movimentacoes.stream()
-                .filter(m ->
-                        m.getVeiculo().getPlaca().equalsIgnoreCase(placa)
-                                && !m.finalizada())
-                .findFirst()
-                .orElseThrow(() ->
-                        new RuntimeException("Veículo não está estacionado!"));
+        for (Movimentacao mov : movimentacoes) {
 
-        mov.registrarSaida();
-        movimentacaoDAO.registrarSaida(placa, mov.getValorPago()
+            if (
+                    mov.getVeiculo()
+                            .getPlaca()
+                            .equalsIgnoreCase(placa)
+
+                            &&
+
+                            mov.getDataSaida() == null
+            ) {
+
+                mov.registrarSaida();
+
+                mov.getVaga().liberar();
+
+                int veiculoId =
+                        veiculoDAO.buscarIdPorPlaca(
+                                placa
+                        );
+
+                movimentacaoDAO.registrarSaida(
+                        veiculoId,
+                        mov.getValorPago()
+                );
+
+                System.out.println(
+                        "Saída registrada!"
+                );
+
+                return;
+            }
+        }
+
+        throw new RuntimeException(
+                "Veículo não encontrado!"
         );
-
-        System.out.println("Saída registrada!");
     }
 
     // LISTAR VAGAS DISPONÍVEIS

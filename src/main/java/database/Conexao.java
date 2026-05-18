@@ -8,9 +8,11 @@ public class Conexao {
     private static final String URL =
             "jdbc:mysql://localhost:3306/estacionamento";
 
-    private static final String USER = "root";
+    private static final String USER =
+            "root";
 
-    private static final String PASSWORD = "root123";
+    private static final String PASSWORD =
+            "root123";
 
     public static Connection conectar() {
 
@@ -25,7 +27,8 @@ public class Conexao {
         } catch (Exception e) {
 
             throw new RuntimeException(
-                    "Erro ao conectar: " + e.getMessage()
+                    "Erro ao conectar: "
+                            + e.getMessage()
             );
         }
     }
