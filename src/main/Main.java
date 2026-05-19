@@ -23,8 +23,10 @@ public class Main {
             System.out.println("4 - Listar estacionados");
             System.out.println("5 - Histórico");
             System.out.println("6 - Vagas livres");
-            System.out.println("7 - N° de vagas livres1");
+            System.out.println("7 - N° de vagas livres");
             System.out.println("0 - Sair");
+
+            System.out.print("Escolha uma opção: ");
 
             int op = sc.nextInt();
             sc.nextLine();
@@ -44,21 +46,45 @@ public class Main {
                         System.out.print("Cor: ");
                         String cor = sc.nextLine();
 
-                        System.out.println("1-Carro");
-                        System.out.println("2-Moto");
-                        System.out.println("3-Caminhonete");
+                        System.out.println("1 - Carro");
+                        System.out.println("2 - Moto");
+                        System.out.println("3 - Caminhonete");
 
+                        System.out.print("Tipo: ");
                         int tipo = sc.nextInt();
                         sc.nextLine();
 
                         Veiculo v;
 
                         if (tipo == 1) {
-                            v = new Carro(placa, modelo, cor);
+
+                            v = new Carro(
+                                    placa,
+                                    modelo,
+                                    cor
+                            );
+
                         } else if (tipo == 2) {
-                            v = new Moto(placa, modelo, cor);
+
+                            v = new Moto(
+                                    placa,
+                                    modelo,
+                                    cor
+                            );
+
+                        } else if (tipo == 3) {
+
+                            v = new Caminhonete(
+                                    placa,
+                                    modelo,
+                                    cor
+                            );
+
                         } else {
-                            v = new Caminhonete(placa, modelo, cor);
+
+                            throw new RuntimeException(
+                                    "Tipo de veículo inválido!"
+                            );
                         }
 
                         est.cadastrarVeiculo(v);
@@ -75,7 +101,10 @@ public class Main {
                         System.out.print("Escolha a vaga: ");
                         String vaga = sc.nextLine();
 
-                        est.registrarEntrada(placaEntrada, vaga);
+                        est.registrarEntrada(
+                                placaEntrada,
+                                vaga
+                        );
 
                         break;
 
@@ -89,23 +118,40 @@ public class Main {
                         break;
 
                     case 4:
+
                         est.listarEstacionados();
+
                         break;
 
                     case 5:
+
                         est.historico();
+
                         break;
 
                     case 6:
+
                         est.listarVagasDisponiveis();
+
                         break;
 
                     case 7:
+
                         est.quantidadeVagasDisponiveis();
+
                         break;
 
                     case 0:
+
+                        System.out.println("Sistema encerrado.");
+                        sc.close();
                         System.exit(0);
+
+                        break;
+
+                    default:
+
+                        System.out.println("Opção inválida!");
                 }
 
             } catch (Exception e) {

@@ -9,68 +9,56 @@ import java.sql.ResultSet;
 
 public class VeiculoDAO {
 
-    // SALVAR VEÍCULO
     public void salvar(Veiculo v) {
+
+        if (existePorPlaca(v.getPlaca())) {
+            throw new RuntimeException("Já existe um veículo cadastrado com essa placa!");
+        }
 
         String sql =
                 "INSERT INTO veiculos " +
                         "(placa, modelo, cor, tipo) " +
                         "VALUES (?, ?, ?, ?)";
 
-        try {
-
-            Connection conn =
-                    Conexao.conectar();
-
-            PreparedStatement stmt =
-                    conn.prepareStatement(sql);
+        try (
+                Connection conn = Conexao.conectar();
+                PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
 
             stmt.setString(1, v.getPlaca());
             stmt.setString(2, v.getModelo());
             stmt.setString(3, v.getCor());
-
-            stmt.setString(
-                    4,
-                    v.getClass().getSimpleName()
-            );
+            stmt.setString(4, v.getClass().getSimpleName());
 
             stmt.executeUpdate();
 
-            System.out.println(
-                    "Veículo salvo no banco!"
-            );
+            System.out.println("Veículo salvo no banco!");
 
         } catch (Exception e) {
 
             throw new RuntimeException(
-                    "Erro ao salvar: "
+                    "Erro ao salvar veículo: "
                             + e.getMessage()
             );
         }
     }
 
-    // BUSCAR ID POR PLACA
     public int buscarIdPorPlaca(String placa) {
 
         String sql =
                 "SELECT id FROM veiculos " +
                         "WHERE placa = ?";
 
-        try {
-
-            Connection conn =
-                    Conexao.conectar();
-
-            PreparedStatement stmt =
-                    conn.prepareStatement(sql);
+        try (
+                Connection conn = Conexao.conectar();
+                PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
 
             stmt.setString(1, placa);
 
-            ResultSet rs =
-                    stmt.executeQuery();
+            ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-
                 return rs.getInt("id");
             }
 
@@ -82,8 +70,32 @@ public class VeiculoDAO {
             );
         }
 
-        throw new RuntimeException(
-                "Veículo não encontrado!"
-        );
+        throw new RuntimeException("Veículo não encontrado!");
+    }
+
+    public boolean existePorPlaca(String placa) {
+
+        String sql =
+                "SELECT id FROM veiculos " +
+                        "WHERE placa = ?";
+
+        try (
+                Connection conn = Conexao.conectar();
+                PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
+
+            stmt.setString(1, placa);
+
+            ResultSet rs = stmt.executeQuery();
+
+            return rs.next();
+
+        } catch (Exception e) {
+
+            throw new RuntimeException(
+                    "Erro ao verificar veículo: "
+                            + e.getMessage()
+            );
+        }
     }
 }

@@ -1,6 +1,7 @@
 package model;
 
 public abstract class Veiculo {
+
     protected String placa;
     protected String modelo;
     protected String cor;
@@ -12,7 +13,6 @@ public abstract class Veiculo {
     }
 
     public String getPlaca() {
-
         return placa;
     }
 
@@ -27,7 +27,11 @@ public abstract class Veiculo {
     public abstract double calcularValor(double horas);
 
     protected double calcularBase(double horas) {
-        if (horas <= 1) return 5.0;
+
+        if (horas <= 1) {
+            return 5.0;
+        }
+
         return 5.0 + (Math.ceil(horas - 1) * 3.0);
     }
 }
